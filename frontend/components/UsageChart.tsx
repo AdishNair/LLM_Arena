@@ -16,7 +16,8 @@ export default function UsageChart({ data }: Props) {
           <XAxis dataKey="model_name" tick={{ fontSize: 10 }} />
           <YAxis />
           <Tooltip />
-          <Line type="monotone" dataKey="total_responses" stroke="#2a9d8f" strokeWidth={3} />
+          <Line type="monotone" dataKey="successful_responses" stroke="#2a9d8f" strokeWidth={3} />
+          <Line type="monotone" dataKey="failed_responses" stroke="#e63946" strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
     </div>

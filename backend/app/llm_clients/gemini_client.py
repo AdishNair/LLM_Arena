@@ -13,7 +13,7 @@ class GeminiClient(BaseLLMClient):
 
     async def generate_response(self, model: str, prompt: str, context: list[dict] | None = None) -> str:
         if not self.api_key:
-            return 'Gemini API key not configured.'
+            raise RuntimeError('Gemini API key not configured.')
 
         parts: list[dict[str, str]] = []
         if context:
@@ -34,7 +34,10 @@ class GeminiClient(BaseLLMClient):
 
         candidates = data.get('candidates', [])
         if not candidates:
-            return 'Gemini returned no candidates.'
+            raise RuntimeError('Gemini returned no candidates.')
 
         text_parts = candidates[0].get('content', {}).get('parts', [])
-        return '\n'.join(part.get('text', '') for part in text_parts).strip()
+        content = '\n'.join(part.get('text', '') for part in text_parts).strip()
+        if not content:
+            raise RuntimeError('Gemini returned an empty response.')
+        return content

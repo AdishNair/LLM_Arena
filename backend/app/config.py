@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     evaluator_provider: str = 'groq'
     evaluator_model: str = 'llama-3.1-8b-instant'
 
-    max_conversation_rounds: int = 3
+    max_conversation_rounds: int = 4
     skip_db_init: bool = False
     use_celery: bool = False
 

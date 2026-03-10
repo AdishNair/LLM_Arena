@@ -13,7 +13,7 @@ class HuggingFaceClient(BaseLLMClient):
 
     async def generate_response(self, model: str, prompt: str, context: list[dict] | None = None) -> str:
         if not self.api_key:
-            return 'HuggingFace API key not configured.'
+            raise RuntimeError('HuggingFace API key not configured.')
 
         headers = {'Authorization': f'Bearer {self.api_key}'}
         prompt_prefix = ''
@@ -33,7 +33,13 @@ class HuggingFaceClient(BaseLLMClient):
 
         if isinstance(data, list) and data:
             generated = data[0].get('generated_text', '')
-            return generated.strip()
+            content = generated.strip()
+            if not content:
+                raise RuntimeError('HuggingFace returned an empty response.')
+            return content
         if isinstance(data, dict) and data.get('generated_text'):
-            return str(data['generated_text']).strip()
-        return str(data)
+            content = str(data['generated_text']).strip()
+            if not content:
+                raise RuntimeError('HuggingFace returned an empty response.')
+            return content
+        raise RuntimeError(f'HuggingFace returned an unsupported payload: {data}')

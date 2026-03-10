@@ -31,7 +31,7 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
-        <h2 className="font-display text-xl">Thread Agreement Analysis</h2>
+        <h2 className="font-display text-xl">Thread Analysis</h2>
         <form className="mt-3 flex gap-2" onSubmit={fetchThreadAnalytics}>
           <input className="rounded-lg border border-slate-300 px-3 py-2 text-sm" value={threadId} onChange={(e) => setThreadId(e.target.value)} placeholder="Thread ID" />
           <button className="rounded-lg bg-ink px-3 py-2 text-sm text-white">Analyze</button>
@@ -40,12 +40,19 @@ export default function AnalyticsPage() {
         {threadAnalytics && (
           <div className="mt-4 space-y-2 text-sm">
             <div>Responses: {threadAnalytics.response_count}</div>
+            <div>Successful: {threadAnalytics.successful_response_count}</div>
+            <div>Failed: {threadAnalytics.failed_response_count}</div>
+            <div>Max round reached: {threadAnalytics.max_round_reached}</div>
             <div>Agreement Index: {threadAnalytics.agreement_index}/10</div>
             <div className="rounded-lg bg-mist p-3">
-              <div className="font-semibold">Conversation Summary</div>
+              <div className="font-semibold">Thread Summary</div>
+              <div className="text-slate-600">{threadAnalytics.thread_summary}</div>
+            </div>
+            <div className="rounded-lg bg-mist p-3">
+              <div className="font-semibold">Per-model snapshot</div>
               <div className="text-slate-600">
                 {threadAnalytics.model_scores
-                  .map((m) => `${m.model_name} avg ${m.avg_overall.toFixed(2)}`)
+                  .map((model) => `${model.model_name}: blended ${model.blended_score.toFixed(2)}, role ${model.avg_role_adherence.toFixed(2)}`)
                   .join(' | ') || 'No responses evaluated yet.'}
               </div>
             </div>

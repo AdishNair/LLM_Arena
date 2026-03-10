@@ -13,7 +13,7 @@ class AnthropicClient(BaseLLMClient):
 
     async def generate_response(self, model: str, prompt: str, context: list[dict] | None = None) -> str:
         if not self.api_key:
-            return 'Anthropic API key not configured.'
+            raise RuntimeError('Anthropic API key not configured.')
 
         headers = {
             'x-api-key': self.api_key,
@@ -38,4 +38,7 @@ class AnthropicClient(BaseLLMClient):
             response.raise_for_status()
             data = response.json()
         text_parts = [item['text'] for item in data.get('content', []) if item.get('type') == 'text']
-        return '\n'.join(text_parts).strip()
+        content = '\n'.join(text_parts).strip()
+        if not content:
+            raise RuntimeError('Anthropic returned an empty response.')
+        return content

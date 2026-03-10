@@ -1,5 +1,22 @@
 import axios from 'axios';
 
+export type ThreadParticipant = {
+  model_name: string;
+  role: string;
+};
+
+export type EvaluationDetail = {
+  overall_score: number;
+  role_adherence: number;
+  debate_quality: number;
+  evidence_quality: number;
+  improvement_score: number;
+  evaluation_mode: string;
+  judge_provider: string;
+  judge_model: string;
+  failure_tags: string[];
+};
+
 export type Evaluation = {
   id: number;
   relevance: number;
@@ -8,6 +25,7 @@ export type Evaluation = {
   usefulness: number;
   engagement: number;
   notes: string;
+  detail: EvaluationDetail | null;
 };
 
 export type ModelResponse = {
@@ -18,6 +36,11 @@ export type ModelResponse = {
   parent_response_id: number | null;
   round_number: number;
   created_at: string;
+  role_name: string;
+  status: string;
+  error_detail: string;
+  response_type: string;
+  average_user_rating: number | null;
   evaluations: Evaluation[];
 };
 
@@ -28,6 +51,10 @@ export type Thread = {
   user_id: number;
   subforum_id: number | null;
   created_at: string;
+  allow_model_replies: boolean;
+  conversation_rounds: number;
+  include_summary: boolean;
+  participants: ThreadParticipant[];
 };
 
 export type ThreadDetail = {
@@ -43,14 +70,26 @@ export type LeaderboardRow = {
   avg_usefulness: number;
   avg_engagement: number;
   avg_overall: number;
+  blended_score: number;
+  avg_role_adherence: number;
+  avg_debate_quality: number;
+  avg_evidence_quality: number;
+  avg_improvement_score: number;
+  avg_human_rating: number | null;
   total_responses: number;
+  successful_responses: number;
+  failed_responses: number;
 };
 
 export type ThreadAnalytics = {
   thread_id: number;
   response_count: number;
+  successful_response_count: number;
+  failed_response_count: number;
+  max_round_reached: number;
   model_scores: LeaderboardRow[];
   agreement_index: number;
+  thread_summary: string;
 };
 
 export type Subforum = {
@@ -85,13 +124,25 @@ export const Api = {
     title: string;
     prompt: string;
     subforum_id?: number;
-    selected_models: string[];
+    selected_models?: string[];
+    participants: ThreadParticipant[];
     allow_model_replies: boolean;
+    conversation_rounds: number;
+    include_summary: boolean;
   }): Promise<Thread> {
     const res = await api.post('/threads/create', payload);
     return res.data;
   },
-  async rerunThread(threadId: string, payload?: { selected_models?: string[]; allow_model_replies?: boolean }): Promise<Thread> {
+  async rerunThread(
+    threadId: string,
+    payload?: {
+      selected_models?: string[];
+      participants?: ThreadParticipant[];
+      allow_model_replies?: boolean;
+      conversation_rounds?: number;
+      include_summary?: boolean;
+    },
+  ): Promise<Thread> {
     const res = await api.post(`/threads/${threadId}/rerun`, payload ?? {});
     return res.data;
   },

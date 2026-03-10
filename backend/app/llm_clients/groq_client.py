@@ -13,7 +13,7 @@ class GroqClient(BaseLLMClient):
 
     async def generate_response(self, model: str, prompt: str, context: list[dict] | None = None) -> str:
         if not self.api_key:
-            return 'Groq API key not configured.'
+            raise RuntimeError('Groq API key not configured.')
 
         messages = context[:] if context else []
         messages.append({'role': 'user', 'content': prompt})
@@ -26,4 +26,7 @@ class GroqClient(BaseLLMClient):
             response.raise_for_status()
             data = response.json()
 
-        return data['choices'][0]['message']['content'].strip()
+        content = data['choices'][0]['message']['content'].strip()
+        if not content:
+            raise RuntimeError('Groq returned an empty response.')
+        return content

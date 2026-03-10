@@ -13,7 +13,7 @@ class MistralClient(BaseLLMClient):
 
     async def generate_response(self, model: str, prompt: str, context: list[dict] | None = None) -> str:
         if not self.api_key:
-            return 'Mistral API key not configured.'
+            raise RuntimeError('Mistral API key not configured.')
 
         messages = context[:] if context else []
         messages.append({'role': 'user', 'content': prompt})
@@ -24,4 +24,7 @@ class MistralClient(BaseLLMClient):
             response = await client.post('https://api.mistral.ai/v1/chat/completions', headers=headers, json=payload)
             response.raise_for_status()
             data = response.json()
-        return data['choices'][0]['message']['content'].strip()
+        content = data['choices'][0]['message']['content'].strip()
+        if not content:
+            raise RuntimeError('Mistral returned an empty response.')
+        return content

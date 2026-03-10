@@ -9,7 +9,7 @@ const links = [
   { href: '/subforums', label: 'Subforums' },
   { href: '/leaderboard', label: 'Leaderboard' },
   { href: '/analytics', label: 'Analytics' },
-];
+] as const;
 
 export default function Navbar() {
   const path = usePathname();

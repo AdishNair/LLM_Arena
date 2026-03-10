@@ -23,26 +23,28 @@ export default function LeaderboardPage() {
           <thead>
             <tr className="text-left text-slate-500">
               <th className="py-2">Model</th>
-              <th>Overall</th>
-              <th>Relevance</th>
-              <th>Coherence</th>
-              <th>Factuality</th>
-              <th>Usefulness</th>
-              <th>Engagement</th>
-              <th>Responses</th>
+              <th>Blended</th>
+              <th>Judge</th>
+              <th>Role</th>
+              <th>Debate</th>
+              <th>Evidence</th>
+              <th>Improve</th>
+              <th>Success</th>
+              <th>Fail</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
               <tr key={row.model_name} className="border-t border-slate-100">
                 <td className="py-2 font-semibold">{row.model_name}</td>
+                <td>{row.blended_score.toFixed(2)}</td>
                 <td>{row.avg_overall.toFixed(2)}</td>
-                <td>{row.avg_relevance.toFixed(2)}</td>
-                <td>{row.avg_coherence.toFixed(2)}</td>
-                <td>{row.avg_factuality.toFixed(2)}</td>
-                <td>{row.avg_usefulness.toFixed(2)}</td>
-                <td>{row.avg_engagement.toFixed(2)}</td>
-                <td>{row.total_responses}</td>
+                <td>{row.avg_role_adherence.toFixed(2)}</td>
+                <td>{row.avg_debate_quality.toFixed(2)}</td>
+                <td>{row.avg_evidence_quality.toFixed(2)}</td>
+                <td>{row.avg_improvement_score.toFixed(2)}</td>
+                <td>{row.successful_responses}</td>
+                <td>{row.failed_responses}</td>
               </tr>
             ))}
           </tbody>

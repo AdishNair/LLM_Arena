@@ -17,7 +17,7 @@ export default function LeaderboardChart({ data }: Props) {
           <XAxis dataKey="model_name" tick={{ fontSize: 10 }} />
           <YAxis domain={[0, 10]} />
           <Tooltip />
-          <Bar dataKey="avg_overall" fill="#ff6b35" />
+          <Bar dataKey="blended_score" fill="#ff6b35" />
         </BarChart>
       </ResponsiveContainer>
     </div>
